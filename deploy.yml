@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tfc-run-task-router
+  annotations: 
+    ves.io/workload-flavor: medium
+    ves.io/virtual-sites: d-garrison/d-garrison-re-wes-sea
+spec: 
+  selector:
+    matchLabels:
+      app: tfc-run-task-router
+  template:
+    metadata:
+      labels:
+        app: tfc-run-task-router
+    spec:
+      containers:
+        - name: tfc-run-task-router
+          image: dgimages.azurecr.io/tfc-run-task-router
+    
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: tfc-run-task-router-service
+spec:
+  selector:
+    app: tfc-run-task-router
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
