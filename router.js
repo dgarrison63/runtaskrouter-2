@@ -9,60 +9,6 @@ const axios = require('axios');
 const jsonQuery = require('json-query');
 const AS3URL = "http://localhost:9090/as3";
 
-/*
-function getPlanOutput(body, url, token) {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  };
-  console.log('BEFORE CALL TO AXIOS IN GET PLAN OUTPUT')
-  axios
-    .get(url, config)
-    .then((res) => {
-      const planOutput = res.data;
-      console.log('AFTER CALL TO AXIOS IN GET PLAN OUTPUT: ', planOutput)
-
-      return planOutput;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-*/
-/*
-app.use( async (ctx, next) => {
-  try {
-    await next()
-  } catch(err) {
-    console.log(err.status)
-    ctx.status = err.status || 500;
-    ctx.body = err.message;
-  }
-})
-*/
-
-/* const getPlanOutput =  async (body, planOutputURL, apiToken) => {
-  const config = {
-    headers: {
-      Authorization: `Bearer ${apiToken}`,
-      'Content-Type': 'application/json',
-    },
-  };
-  try {
-      const resp = await axios.get(planOutputURL, config).then(resp => {
-      console.log(resp.data);
-      const payload = resp.data;
-      return resp.data.json();
-     })
-  } catch (err) {
-      // Handle Error Here
-      console.error(err);
-  }
-}; */
-
-
 async function getPlan(url, accessToken) {
   const options = {
       method: 'GET',
@@ -79,39 +25,6 @@ async function getPlan(url, accessToken) {
   return plan.json()
 
 }
-
-
-
-/* 
-async function postCallback(body, url, token, taskStatus) {
-  console.log('PLAN RESULT IN POSTCALLBACK', `${taskStatus}`);
-  const config = {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/vnd.api+json',
-    },
-  };
-  const payload = {
-    data: {
-      type: 'task-results',
-      attributes: {
-        status: `${taskStatus}`,
-        message: 'Hello task',
-        url: 'http://google.com'
-      },
-    },
-  };
-  await axios
-    .patch(url, payload, config)
-    .then((res) => {
-      console.log(`statusCode: ${res.status}`);
-      console.log(res);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
- */
 
 async function sendCallback(callbackUrl, accessToken, status, message, url) {
   // Format the payload for the callback
@@ -156,34 +69,11 @@ async function callAS3Validator(planOutput) {
       },
       body: data
   }
-
  const taskStatus  = await fetch(AS3URL, options)
  console.log("STATUS", taskStatus);
  return taskStatus
 }
 
-
-
-/*
-async function callAS3Validate(planOutput) {
-    console.log('PLAN BEFORE CALL TO AS3 WORKER' + planOutput);
-    const payload = JSON.stringify({
-      "data": {
-        "planOutput": planOutput
-      },
-      body: payload
-    });
-    await axios
-      .post(AS3URL, payload)
-      .then((res) => {
-        console.log(`statusCode: ${res.status}`);
-    //    console.log(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
-  */
 
 router.post('/as3', async(ctx) => {
   const { body } = ctx.request;
