@@ -21,9 +21,7 @@ async function getPlan(url, accessToken) {
   // Documentation - https://www.terraform.io/cloud-docs/api-docs/plans#retrieve-the-json-execution-plan
   // The fetch API follows the redirect by default
   const plan = await fetch(url, options)
-  // console.log('PLAN OUTPUT IN getPlan FUNCTION', JSON.parse(plan));
-  return plan.json()
-
+  return plan.json();
 }
 
 async function sendCallback(callbackUrl, accessToken, status, message, url) {
@@ -39,7 +37,6 @@ async function sendCallback(callbackUrl, accessToken, status, message, url) {
           }
       }
   })
-
   const options = {
       method: 'PATCH',
       headers: {
@@ -48,7 +45,6 @@ async function sendCallback(callbackUrl, accessToken, status, message, url) {
       },
       body: data
   }
-
   await fetch(callbackUrl, options)
 }
 
@@ -57,11 +53,10 @@ async function callAS3Validator(planOutput) {
       "data": {
           "type": "plan-output",
           "attributes": {
-             planOutput
+            planOutput
           }
       }
   })
-
   const options = {
       method: 'POST',
       headers: {
@@ -86,12 +81,13 @@ router.post('/as3', async(ctx) => {
   console.log('BEFORE CALLING getPlanOutput FUNCTION')
   // planOutput = await getPlanOutput(body, planOutputURL, apiToken);
   // const planOutput = await getPlan(planOutputURL, apiToken).then(plan => console.log('THIS IS THE PLAN IN ROUTER POST', plan));
-  const planOutput = await getPlan(planOutputURL, apiToken).then(plan => (taskStatus =  callAS3Validator(plan)) );
-  // let planOutput = ""; 
+  //const planOutput = await getPlan(planOutputURL, apiToken).then(plan => (taskStatus =  callAS3Validator(plan)) );
+  const planOutput = await getPlan(planOutputURL, apiToken);
   // getPlan(planOutputURL, apiToken).then(plan => planOutput = plan);
-  // console.log('THIS IS THE RESULT AFTER CALL TO GET PLAN OUTPUT...' +  planOutput().then);
-  console.log('PLAN OUTPUT BEFORE CALLING AS3', JSON.stringify(planOutput));
- // const taskStatus = await callAS3Validator(planOutput);
+  console.log(`THIS IS THE RESULT AFTER CALL TO GET PLAN OUTPUT.. ${JSON.stringify(planOutput, null, 2)}`);
+ const status = await callAS3Validator(planOutput);
+ console.log(status[0]);
+// console.log('PLAN OUTPUT AFTER CALLING AS3', JSON.stringify(planOutput));
  // postCallback(body, callbackURL, apiToken, taskStatus);
  await sendCallback(callbackURL, apiToken, 'passed', 'Hello World', 'http://example.com/runtask/QxZyl')
 

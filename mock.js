@@ -8,15 +8,13 @@ const axios = require('axios');
 
 router.post('/as3', (ctx) => {
   const { body } = ctx.request;
-  console.log('This is the request body...', body);
+  console.log('This is the request body...', JSON.stringify(body))
 //  console.log('This is the plan output url...', body.plan_json_api_url);
   // logRequest(ctx);
   ctx.status = 200;
   // console.log(ctx.response);
-  ctx.body = 'got it!';
-  return {
-    'status': "passed"
-  };
+  // ctx.body = 'got it!';
+  return ["passed", "this is a message", "https://www.f5.com"]
 });
 
 router.all('/', (ctx) => {
