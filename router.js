@@ -6,8 +6,9 @@ const bodyParser = require('koa-bodyparser');
 const app = new koa()
 const router = new koaRouter()
 const axios = require('axios');
-const jsonQuery = require('json-query');
-const AS3URL = "http://localhost:9090/as3";
+// const jsonQuery = require('json-query');
+//const AS3URL = "http://localhost:9090/as3";
+const AS3URL = "http://ves-io-04218a69-38d2-43ea-8934-5086550f347b.ac.vh.ves.io/as3";
 
 async function getPlan(url, accessToken) {
   const options = {
@@ -64,9 +65,8 @@ async function callAS3Validator(planOutput) {
       },
       body: data
   }
- const taskStatus  = await fetch(AS3URL, options)
- console.log("STATUS", taskStatus);
- return taskStatus
+ const response = await fetch(AS3URL, options);
+ return response.json();
 }
 
 
@@ -85,15 +85,18 @@ router.post('/as3', async(ctx) => {
   const planOutput = await getPlan(planOutputURL, apiToken);
   // getPlan(planOutputURL, apiToken).then(plan => planOutput = plan);
   console.log(`THIS IS THE RESULT AFTER CALL TO GET PLAN OUTPUT.. ${JSON.stringify(planOutput, null, 2)}`);
- const status = await callAS3Validator(planOutput);
- console.log(status[0]);
-// console.log('PLAN OUTPUT AFTER CALLING AS3', JSON.stringify(planOutput));
+  const validator = await callAS3Validator(planOutput);
+ console.log("VALUE OF VALIDATOR ", validator.data.result, validator.data.message, validator.data.urlLink)
+//  const result = validator.result
+//  const message = ctx.response.message
+//  const urlLink = ctx.response.urlLink
+//  console.log("THIS IS THE RETURN FROM AS3 VALIDATOR", result, message, urlLink)
+// console.log('PLAN OUTPUT AFTER ,CALLING AS3', JSON.stringify(planOutput));
  // postCallback(body, callbackURL, apiToken, taskStatus);
- await sendCallback(callbackURL, apiToken, 'passed', 'Hello World', 'http://example.com/runtask/QxZyl')
+ await sendCallback(callbackURL, apiToken, validator.data.result, validator.data.message, validator.data.urlLink)
 
-  ctx.status = 200;
+  ctx.response.status = 200;
   // console.log(ctx.response);
-  ctx.body = 'got it!';
 });
 
 router.all('/', (ctx) => {

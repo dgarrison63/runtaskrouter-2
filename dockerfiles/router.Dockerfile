@@ -11,7 +11,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Update Ubuntu Software repository
 RUN apt update
-RUN apt-get -y install curl
+RUN apt-get -y install --no-install-recommends curl
 RUN curl -sL https://deb.nodesource.com/setup_18.x  | bash -
 RUN apt-get -y install nodejs
 WORKDIR /usr/app

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tfc-run-task-router
-          image: dgimages.azurecr.io/tfc-run-task-router
+          image: dgimages.azurecr.io/tfc-run-task-router:0.1
     
 ---
 # https://kubernetes.io/docs/concepts/services-networking/service/
@@ -24,6 +24,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tfc-run-task-router-service
+  annotations: 
+    ves.io/virtual-sites: d-garrison/d-garrison-re-wes-sea
 spec:
   selector:
     app: tfc-run-task-router

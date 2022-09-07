@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tfc-run-task-router-mock
+  annotations: 
+    ves.io/workload-flavor: medium
+    ves.io/virtual-sites: d-garrison/d-garrison-re-wes-sea
+spec: 
+  selector:
+    matchLabels:
+      app: tfc-run-task-router-mock
+  template:
+    metadata:
+      labels:
+        app: tfc-run-task-router-mock
+    spec:
+      containers:
+        - name: tfc-run-task-router-mock
+          image: dgimages.azurecr.io/run-task-router-mock:0.1
+    
+---
+# https://kubernetes.io/docs/concepts/services-networking/service/
+apiVersion: v1
+kind: Service
+metadata:
+  name: tfc-run-task-router-mock-service
+  annotations: 
+    ves.io/virtual-sites: d-garrison/d-garrison-re-wes-sea
+spec:
+  selector:
+    app: tfc-run-task-router-mock
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: ClusterIP
